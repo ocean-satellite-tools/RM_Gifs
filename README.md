@@ -1,28 +1,22 @@
----
-title: "Creating a gif of satellite images"
-author: "EE Holmes"
-date: "8/30/2018"
-output: github_document
----
+Creating a gif of satellite images
+================
+EE Holmes
+8/30/2018
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
-```
-
-## Creating gifs of satellite images
+Creating gifs of satellite images
+---------------------------------
 
 The script downloads images from the CoastWatch ERDDAP server and then creates a gif using ImageMagick.
 
-You will need some packages for this.  Here are install instructions for those on GitHub.
-```
-require(devtools)
-devtools::install_github("ropensci/rerddap")
-devtools::install_github("rmendels/rerddapXtracto") 
-```
+You will need some packages for this. Here are install instructions for those on GitHub.
 
+    require(devtools)
+    devtools::install_github("ropensci/rerddap")
+    devtools::install_github("rmendels/rerddapXtracto") 
 
-Load the packages.  
-```{r load_packages}
+Load the packages.
+
+``` r
 library(rerddap)
 library(rerddapXtracto)
 library(ggplot2) # plotting
@@ -31,41 +25,40 @@ library(purrr) # for map()
 library(magick) # for image_* functions
 ```
 
-## Step 1. Install ImageMagick if needed
+Step 1. Install ImageMagick if needed
+-------------------------------------
 
 Here is how to do it on a Mac (MacOS Sierra 10.12.6); Google to figure this out for Windows or Unix.
 
-1. Open up utilities (in apps), and open Terminal.  
-2. Type the following on the command line to install `brew`
-```
-ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
-```
-3. Then you can install ImageMagick with this command.
-```
-brew install imagemagick
-```
+1.  Open up utilities (in apps), and open Terminal.
+2.  Type the following on the command line to install `brew`
 
-## Step 2. Create a folder for the downloaded images
+        ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
 
-```{r create_dir}
+3.  Then you can install ImageMagick with this command.
+
+        brew install imagemagick
+
+Step 2. Create a folder for the downloaded images
+-------------------------------------------------
+
+``` r
 fil_dir <- paste0("india_sst_pngs_",year)
 if(!dir.exists(fil_dir)) dir.create(fil_dir)
 ```
 
-## Step 3. Download pngs from CoastWatch
+Step 3. Download pngs from CoastWatch
+-------------------------------------
 
-We will download SST images from the Global SST & Sea Ice Analysis, L4 OSTIA, UK Met Office, Global, 0.05°, Daily, 
-2013-present product.  [Here](https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplUKMO_OSTIAv20.html) is the data access page for that dataset.
+We will download SST images from the Global SST & Sea Ice Analysis, L4 OSTIA, UK Met Office, Global, 0.05°, Daily, 2013-present product. [Here](https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplUKMO_OSTIAv20.html) is the data access page for that dataset.
 
-We will create a url for each day that we want to download.  The url will look like
+We will create a url for each day that we want to download. The url will look like
 
-```
-https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplUKMO_OSTIAv20.png?analysed_sst%5B(2014-12-31T12:00:00Z)%5D%5B(7.125):(15.125)%5D%5B(72.625):(78.375)%5D&.draw=surface&.vars=longitude%7Clatitude%7Canalysed_sst&.colorBar=%7C%7C%7C24%7C34%7C&.bgColor=0xffccccff&.trim=0&.size=300
-```
+    https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplUKMO_OSTIAv20.png?analysed_sst%5B(2014-12-31T12:00:00Z)%5D%5B(7.125):(15.125)%5D%5B(72.625):(78.375)%5D&.draw=surface&.vars=longitude%7Clatitude%7Canalysed_sst&.colorBar=%7C%7C%7C24%7C34%7C&.bgColor=0xffccccff&.trim=0&.size=300
 
-We want to keep everything except the dates.  We will update the date for each image.
+We want to keep everything except the dates. We will update the date for each image.
 
-```{r spec_url_parts}
+``` r
 url1="https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplUKMO_OSTIAv20.png?analysed_sst%5B("
 url2="T12:00:00Z)%5D%5B("
 url3="):("
@@ -80,7 +73,7 @@ lat1 <- 7.125; lat2 <- 15.125
 
 Now we go through each month in a year and download the pngs for that satellite image.
 
-```{r download_pngs}
+``` r
 year="2015"
 for(mon in 1:12){
   for(i in seq(1,31,2)){ # i is day
@@ -98,11 +91,12 @@ for(mon in 1:12){
 }
 ```
 
-## Step 4. Add a header to our Gifs with the year, month and day
+Step 4. Add a header to our Gifs with the year, month and day
+-------------------------------------------------------------
 
-I am adding an annotation to the top.  I could also create an image header and append that to the top.
+I am adding an annotation to the top. I could also create an image header and append that to the top.
 
-```{r add_header}
+``` r
 library(stringr)
 files = list.files(path = fil_dir, pattern = "*.png", full.names = T)
 for(i in files){
@@ -115,10 +109,11 @@ for(i in files){
   image_write(img, i, 'png')  
 }
 ```
-  
-## Step 5. Make animation
 
-```{r make_gif}
+Step 5. Make animation
+----------------------
+
+``` r
 gif_fil <- paste0("kochin_sst_", year, ".gif")
 list.files(path = fil_dir, pattern = "*.png", full.names = T) %>% 
   map(image_read) %>% # reads each path file
@@ -127,15 +122,9 @@ list.files(path = fil_dir, pattern = "*.png", full.names = T) %>%
   image_write(gif_fil) # write to current dir
 ```
 
-## Finished Product
+Finished Product
+----------------
 
 This shows SST off the SW coast of India in 2014 versus 2017.
 
-<div style="text-align:center" markdown="1">
-
 ![Gif of SST off SW Coast of India](kochin_sst_2014.gif) ![Gif of SST off SW Coast of India](kochin_sst_2017.gif)
-
-</div>
-
-
-
