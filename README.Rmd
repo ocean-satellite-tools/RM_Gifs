@@ -25,7 +25,8 @@ The example makes a gif like this:
 
 ## Examples
 
-* [SST off the SW Coast of India 2015-2017](Kochin_SST_2015-17.html)
+* [Gifs of SST off the SW Coast of India 2015-2017](Kochin_SST_2015-17.html)
+* [Movie from Gifs of SST off the SW Coast of India 2015-2017](Kochin_SST_2015-17_movie.html)
 
 
 
