@@ -1,0 +1,26 @@
+---
+title: "SST off Kochin 2014 to 2017"
+author: "EE Holmes"
+date: "8/30/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+These SST images are from the Global SST & Sea Ice Analysis, L4 OSTIA, UK Met Office, Global, 0.05°, Daily, 
+2013-present product [here](https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplUKMO_OSTIAv20.html).  SST is shown every 2 days.
+
+Coastal upwelling can be seen when cold water is near the coast while warmer water is off-shore. The oil sardine catch experienced a peak in the 2012 season (fall 2012 to spring 2013) and then declined.  In the 2016 season (fall 2016 to spring 2017), the catch collapsed.  It recovered somewhat in the 2017 season.
+
+<div style="text-align:center" markdown="1">
+
+| Legend        | ![Legend](legend.png)          |
+| ------------- |:-------------:|
+| ![Gif of SST off SW Coast of India](kochin_sst_cropped_2014.gif)      | ![Gif of SST off SW Coast of India](kochin_sst_cropped_2015.gif) |
+| ![Gif of SST off SW Coast of India](kochin_sst_cropped_2016.gif) | ![Gif of SST off SW Coast of India](kochin_sst_cropped_2017.gif) |
+
+</div>
+
+
