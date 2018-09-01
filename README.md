@@ -8,7 +8,9 @@ Creating gifs of satellite images
 
 This is an example of how to download satellite images from an ERDDAP server and then make a gif. All in R using ImageMagick.
 
-[Here are step-by-step instructions](Make_a_gif_from_satellite_images.html)
+[Here are step-by-step instructions for making a gif](Make_a_gif_from_satellite_images.html)
+
+[Or make a movie from the pngs](Make_a_mp4_from_satellite_images.html)
 
 The example makes a gif like this:
 

@@ -2,7 +2,7 @@
 title: "Creating a gif of satellite images"
 author: "EE Holmes"
 date: "8/30/2018"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}

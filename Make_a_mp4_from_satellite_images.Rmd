@@ -1,0 +1,124 @@
+---
+title: "Creating a mp4 of satellite images"
+author: "EE Holmes"
+date: "8/30/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+## Creating mp4 of satellite images
+
+This assumes that you already have all the images in a directory.
+
+Load the packages.  
+```{r load_packages}
+library(ggplot2) # plotting
+library(magick) # for image_* functions
+```
+
+## Step 1. Install FFmpeg if needed
+
+Here is how to do it on a Mac (MacOS Sierra 10.12.6); Google to figure this out for Windows or Unix.
+
+1. Open up utilities (in apps), and open Terminal.  
+2. Type the following on the command line to install `brew`
+```
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+```
+3. Then you can install FFmpeg with this command.
+```
+brew install ffmpeg
+```
+
+## Make animation with animation and FFmpeg
+
+```{r mp4_1}
+library(animation)
+fil_dir = "wheremypngsare"
+imgs <- list.files(path=fil_dir,pattern="*.png", full.names = T)
+saveVideo({
+  for(img in imgs){
+    im <- magick::image_read(img)
+    plot(as.raster(im))
+  }
+},
+video.name="myanimation.mp4"
+)
+```
+
+The problem is that the mp4 is low quality.  You can change that but you need to dig into the documentation for FFmpeg.
+
+## Alternative.  Use free gif to mp4 converter
+
+Make a gif and then upload to [A free gif to mp4 converter]( https://ezgif.com/gif-to-mp4) like this one.
+
+## More complicated example
+
+I wanted to merge 4 images from 4 years and have a legend at the bottom.  Here's how I did it using ImageMagick to make a big gif (13M) and then uploaded that to ezgif.com to make a much smaller movie.
+
+<div style="text-align:center" markdown="1">
+
+<video width="400" controls>
+  <source src="Kochin_SST_2014-17_4x4.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+
+</div>
+
+## The code
+
+Here is the code I used
+```{r make_4x4_movie}
+# get the names of each file
+imgs=list()
+for(j in 1:4){
+  year=as.character(2014:2017)[j]
+  fil_dir <- paste0("india_sst_pngs_",year)
+  imgs[[j]] = list.files(path = fil_dir, pattern = "*.png", full.names = T)
+}
+
+# Then make the gif
+img = c()
+imgleg = image_read("legend.png")
+  for(i in 1:length(imgs[[1]])){
+    theimgs=list()
+    for(j in 1:4){
+      theimgs[[j]]=image_read(imgs[[j]][i])
+      theimgs[[j]] = image_crop(theimgs[[j]], geometry_area(width = 230, height = 332, x_off = 28, y_off = 0))
+    }
+    imtop <- image_append(image_join(theimgs[[1]],theimgs[[2]]))
+    imbot <- image_append(image_join(theimgs[[3]],theimgs[[4]]))
+    im <- magick::image_append(image_join(imtop, imbot, imgleg), stack=TRUE)
+    img <- image_join(img, im)
+  }
+imggif = image_animate(img, fps=4, loop=1)
+image_write(imggif, "Kochin_SST_2014-17_4x4.gif")
+```
+
+I could also do the same with animation
+
+```{r animation_4x4_movie}
+# you can use animation package but the default settings give a low quality movie
+library(animation)
+library(magick)
+imgleg = image_read("legend.png")
+saveVideo({
+  for(i in 1:length(img14)){
+    theimgs=list()
+    for(j in 1:4){
+      theimgs[[j]]=image_read(imgs[[j]][i])
+      theimgs[[j]] = image_crop(theimgs[[j]], geometry_area(width = 230, height = 332, x_off = 28, y_off = 0))
+    }
+    imtop <- image_append(image_join(theimgs[[1]],theimgs[[2]]))
+    imbot <- image_append(image_join(theimgs[[3]],theimgs[[4]]))
+    im <- magick::image_append(image_join(imtop, imbot, imgleg), stack=TRUE)
+    plot(as.raster(im))
+  }
+  },
+video.name="Kochin_SST_2014-17.mp4"
+)
+```
+
