@@ -35,7 +35,7 @@ brew install ffmpeg
 
 ## Make animation with animation and FFmpeg
 
-```{r mp4_1}
+```
 library(animation)
 fil_dir = "wheremypngsare"
 imgs <- list.files(path=fil_dir,pattern="*.png", full.names = T)
