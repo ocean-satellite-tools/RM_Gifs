@@ -14,7 +14,7 @@ This is an example of how to download satellite images from an ERDDAP server and
 
 The example makes a gif like this:
 
-![Gif of SST off SW Coast of India](kochin_sst_2014.gif)
+![Gif of SST off SW Coast of India](gifs/kochin_sst_2014.gif)
 
 Examples
 --------
